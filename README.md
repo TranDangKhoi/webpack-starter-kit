@@ -6,6 +6,8 @@
 
 - Xóa package: `yarn remove [package]`
 
+- Nếu làm việc với webpack, muốn build ra file đóng gói: `yarn build`
+
 # Nodemon
 
 Nodemon dùng để tự chạy lại code Javascript mỗi khi save file
