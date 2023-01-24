@@ -285,11 +285,26 @@ module.exports = {
 ## Source map
 
 - Thêm `devtool: 'source-map'` để có `source-map` đầy đủ tiện lợi cho môi trường dev.
+
 - `source-map` sẽ làm chậm tiến trình build và rebuild.
+
 - Ngoài `source-map` ra thì còn có các giá trị khác như `eval`, `eval-cheap-source-map`,...tùy thuộc vào mục đích sử dụng.
-- **Khuyên dùng**: Chỉ nên để `source-map` khi dev, khi build ra production thì hãy disable nó đi vì `source-map` sẽ làm lộ mã nguồn gốc cũng như là tăng kích thước các file build.
+
+- **Khuyên dùng**: Chỉ nên để `source-map` khi code, khi build ra production thì hãy disable nó đi vì `source-map` sẽ làm lộ mã nguồn gốc cũng như là tăng kích thước các file build.
+
 - Webpack nhận các biến môi trường thông qua `--env` trong câu lệnh script khi chạy webpack. Vì thế bạn hãy thêm `"start": "webpack serve --env development"` trong script của `package.json` để truyền `development = true` vào webpack. `module.exports` ở file `webpack.config.js` ngoài bằng một object thì nó còn có thể là một function với tham số là biến object môi trườn env.
 - Bạn cũng có thể truyền biến môi trường vào webpack thông qua `process.env` của NodeJs. Nếu máy windows thì `"start": "SET NODE_ENV=production&webpack serve"`, còn Linux thì `"start": "NODE_ENV=production webpack serve"`. Bên file `webpack.config.js` chỉ cần dùng `process.env.NODE_ENV` để nhận giá trị.
+
+**`package.json`**
+
+```json
+"scripts": {
+    "nodemon": "nodemon index.js",
+    "build": "webpack",
+    "start": "webpack serve --env development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+```
 
 **`webpack.config.js`**
 
@@ -343,9 +358,20 @@ module.exports = (env) => {
 };
 ```
 
+- Ngoài ra còn một cách truyền nữa, sử dụng cách của NodeJS
+
+```json
+{
+  "script": {
+    "start": "SET NODE_ENV=development&webpack serve"
+  }
+}
+```
+
 ## Dùng Babel để dịch code JS thành các phiên bản cũ hơn
 
 - Nếu như chúng ta viết code JS có các cú pháp của phiên bản ES2022 thì những trình duyệt cũ chỉ chạy được ES6 sẽ không thể hiểu được code và dẫn đến lỗi. Vì thế transpile code thành các version cũ hơn là cần thiết. Công cụ transpile phổ biến nhất là **Babel**
+
 - Để sử dụng Babel ở webpack các bạn cần cài `yarn add @babel/core @babel/preset-env babel-loader -D`.
 
 - Để mình giải thích luôn thằng `@babel/core` là lõi của Babel
@@ -354,19 +380,21 @@ module.exports = (env) => {
 - Tiếp theo các bạn thêm cái này vào rules là được.
 
 ```js
-{
-  test: /\.js$/,
-  exclude: /node_modules/,
-  use: {
-    loader: 'babel-loader',
-    options: {
-      presets: ['@babel/preset-env']
-    }
-  }
-}
+rules: [
+  {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        presets: ["@babel/preset-env"],
+      },
+    },
+  },
+];
 ```
 
-- Chúng ta exclude `node_modules` vì quá trình dịch code là quá trình rất nặng và chậm. Hãy đảm bảo chúng ta cần dịch ít code nhất có thể, vì thế chúng ta không cần dịch code từ các package trong `node_module`, những package này đa số đã được dịch để chạy được ở đa số trình duyệt phổ biến rồi.
+- Chúng ta exclude `node_modules` vì quá trình dịch code là quá trình rất nặng và chậm. Hãy đảm bảo chúng ta cần dịch ít code nhất có thể, vì thế chúng ta không cần dịch code từ các package trong `node_modules`, những package này đa số đã được dịch để chạy được ở đa số trình duyệt phổ biến rồi.
 
 - Trừ những trường hợp đặc biệt bạn vẫn phải dịch một số thư viện trong `node_module`. Lúc này có thể kết hợp `test` và `not` như dưới đây.
 
@@ -502,7 +530,7 @@ import "./styles/style.css";
 import "./styles/style.scss";
 console.log(sum(100, 10));
 // ES6 Spread Operator
-const person = { name: "Duoc" };
+const person = { name: "Khoi" };
 const personClone = { ...person };
 console.log("personClone", personClone);
 
